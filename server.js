@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Movie } = require('./Movie');
+const { Director } = require('./Director');
 const PORT = 3000;
 
 const app = express();
@@ -21,21 +22,30 @@ app.post('/movie', (req, res) => {
   });
 });
 
+app.post('/director', (req, res) => {
+  const movie = req.body;
+  Director.create(movie, (err, newMovie) => {
+    err
+    ? res.status(409).send(err)
+    : res.status(201).send(newMovie);
+  });
+});
+
 app.get('/movies', (req, res) => {
-  Movie.find({isActive: true}).exec()
-  .then( (movies) => res.status(200).send(movies))
-  .catch( (error) => res.status(409).send(error))
+  Movie.find({isActive: true}).populate('directors').exec()
+       .then( (movies) => res.status(200).send(movies))
+       .catch( (error) => res.status(409).send(error))
 });
 
 app.get('/movie/:id', (req, res) => {
   const { id } = req.params
-  Movie.findById(id).exec()
-  .then( (movie) => {
-    movie 
-    ? res.status(200).send(movie)
-    : res.status(404).send({message: "Movie not found"})
-  })
-  .catch( (error) => res.status(409).send(error))
+  Movie.findById(id).populate('directors').exec()
+      .then( (movie) => {
+        movie 
+        ? res.status(200).send(movie)
+        : res.status(404).send({message: "Movie not found"})
+      })
+      .catch( (error) => res.status(409).send(error))
 });
 
 app.get('/search', (req, res) => {

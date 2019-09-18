@@ -17,34 +17,22 @@ mongoose.connect(
 
 const Schema = mongoose.Schema;
 
-const movieSchema = new Schema({
-  title: {
+const directorSchema = new Schema({
+  name: {
     type: String,
-    required: true,
-    unique: true
-  },
-  duration: {
-    type: Number,
-    default: 90
-  },
-  genre: {
-    type: String,
-    enum: ['CO', 'DA', 'TE'],
     required: true
+  }, 
+  edad: {
+    type: Number, 
+    default: 18
   },
-  covers: [String],
-  directors: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Director'
-    }]
-  },
-  isActive: {
-    type: Boolean,
-    default: true
+  nationality:{
+    type: String,
+    enum: ['MX', 'US', 'NA'],
+    default: 'NA',
   }
 }, {timestamps: true});
 
-const Movie = mongoose.model('Movie', movieSchema);
+const Director = mongoose.model('Director', directorSchema);
 
-module.exports = { Movie };
+module.exports = { Director };
